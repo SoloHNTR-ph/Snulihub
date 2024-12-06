@@ -143,8 +143,15 @@ export const AuthProvider = ({ children }) => {
       // Clear all session data
       setCurrentUser(null);
       
-      // Clear all authentication-related items from localStorage
-      localStorage.clear(); // This ensures ALL session data is removed
+      // Clear all storage mechanisms
+      localStorage.clear();
+      sessionStorage.clear();
+      
+      // Clear the shared authentication cookie
+      document.cookie = 'auth=;domain=.netlify.app;path=/;max-age=0;secure;samesite=lax';
+      
+      // Also clear it from the root path
+      document.cookie = 'auth=;path=/;max-age=0';
       
       // Reset error state
       setError(null);
@@ -153,6 +160,9 @@ export const AuthProvider = ({ children }) => {
       // Still clear local data even if Firebase update fails
       setCurrentUser(null);
       localStorage.clear();
+      sessionStorage.clear();
+      document.cookie = 'auth=;domain=.netlify.app;path=/;max-age=0;secure;samesite=lax';
+      document.cookie = 'auth=;path=/;max-age=0';
     }
   };
 
