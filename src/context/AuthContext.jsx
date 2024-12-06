@@ -38,13 +38,16 @@ export const AuthProvider = ({ children }) => {
         sessionStorage.setItem('currentUser', userString);
         console.log('Stored in sessionStorage');
         
-        // Set a simple cookie without domain restriction first
-        document.cookie = `auth=${encodeURIComponent(userString)};path=/;max-age=86400`;
+        // Set cookie for root domain to enable sharing between subdomains
+        const cookieOptions = 'path=/;max-age=86400;SameSite=Lax;Secure';
+        
+        // Set cookie without domain first (fallback)
+        document.cookie = `auth=${encodeURIComponent(userString)};${cookieOptions}`;
         console.log('Set basic cookie');
         
-        // Try setting cookie for parent domain
+        // Set cookie for netlify.app domain
         if (window.location.hostname.includes('netlify.app')) {
-          document.cookie = `auth=${encodeURIComponent(userString)};domain=.netlify.app;path=/;max-age=86400`;
+          document.cookie = `auth=${encodeURIComponent(userString)};domain=.netlify.app;${cookieOptions}`;
           console.log('Set netlify domain cookie');
         }
         
